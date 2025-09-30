@@ -1,18 +1,17 @@
 SELECT
   COUNT(DISTINCT `bright_tv_viewership`.`UserID`) AS Number_of_Subscribers,
   `bright_tv_viewership`.`Channel2`,
-  CAST(
-    TO_TIMESTAMP(`bright_tv_viewership`.`RecordDate2`, 'yyyy/MM/dd HH:mm') AS DATE
-  ) AS Watch_date,
-  DAYNAME(TO_TIMESTAMP(`bright_tv_viewership`.`RecordDate2`, 'yyyy/MM/dd HH:mm')) AS Day_name,
-  date_format(TO_TIMESTAMP(`bright_tv_viewership`.`RecordDate2`, 'yyyy/MM/dd HH:mm'), 'MMMM') AS Month_name,
+  from_utc_timestamp(`bright_tv_viewership`.`RecordDate2`, 'Africa/Johannesburg') AS south_africa_time,
+  CAST(from_utc_timestamp(`bright_tv_viewership`.`RecordDate2`, 'Africa/Johannesburg') AS DATE) AS Watch_date,
+  DAYNAME(from_utc_timestamp(`bright_tv_viewership`.`RecordDate2`, 'Africa/Johannesburg')) AS Day_name,
+  date_format(from_utc_timestamp(`bright_tv_viewership`.`RecordDate2`, 'Africa/Johannesburg'), 'MMMM') AS Month_name,
   `bright_tv_user_profiles`.`Gender`,
   `bright_tv_user_profiles`.`Race`,
   `bright_tv_user_profiles`.`Province`,
   CASE
-    WHEN HOUR(DATEADD(HOUR, 2, `bright_tv_viewership`.`Duration2`)) BETWEEN 5 AND 11 THEN 'Morning 5-11am'
-    WHEN HOUR(DATEADD(HOUR, 2, `bright_tv_viewership`.`Duration2`)) BETWEEN 12 AND 16 THEN 'Afternoon 12-4pm'
-    WHEN HOUR(DATEADD(HOUR, 2, `bright_tv_viewership`.`Duration2`)) BETWEEN 17 AND 20 THEN 'Evening 5-8pm'
+    WHEN HOUR(from_utc_timestamp(`bright_tv_viewership`.`RecordDate2`, 'Africa/Johannesburg')) BETWEEN 5 AND 11 THEN 'Morning 5-11am'
+    WHEN HOUR(from_utc_timestamp(`bright_tv_viewership`.`RecordDate2`, 'Africa/Johannesburg')) BETWEEN 12 AND 16 THEN 'Afternoon 12-4pm'
+    WHEN HOUR(from_utc_timestamp(`bright_tv_viewership`.`RecordDate2`, 'Africa/Johannesburg')) BETWEEN 17 AND 20 THEN 'Evening 5-8pm'
     ELSE 'Night'
   END AS Time_Bucket,
   CASE
@@ -55,16 +54,17 @@ WHERE
   `bright_tv_user_profiles`.`Age` IS NOT NULL
 GROUP BY
   `bright_tv_viewership`.`Channel2`,
-  CAST(TO_TIMESTAMP(`bright_tv_viewership`.`RecordDate2`, 'yyyy/MM/dd HH:mm') AS DATE),
-  DAYNAME(TO_TIMESTAMP(`bright_tv_viewership`.`RecordDate2`, 'yyyy/MM/dd HH:mm')),
-  date_format(TO_TIMESTAMP(`bright_tv_viewership`.`RecordDate2`, 'yyyy/MM/dd HH:mm'), 'MMMM'),
+  from_utc_timestamp(`bright_tv_viewership`.`RecordDate2`, 'Africa/Johannesburg'),
+  CAST(from_utc_timestamp(`bright_tv_viewership`.`RecordDate2`, 'Africa/Johannesburg') AS DATE),
+  DAYNAME(from_utc_timestamp(`bright_tv_viewership`.`RecordDate2`, 'Africa/Johannesburg')),
+  date_format(from_utc_timestamp(`bright_tv_viewership`.`RecordDate2`, 'Africa/Johannesburg'), 'MMMM'),
   `bright_tv_user_profiles`.`Gender`,
   `bright_tv_user_profiles`.`Race`,
   `bright_tv_user_profiles`.`Province`,
   CASE
-    WHEN HOUR(DATEADD(HOUR, 2, `bright_tv_viewership`.`Duration2`)) BETWEEN 5 AND 11 THEN 'Morning 5-11am'
-    WHEN HOUR(DATEADD(HOUR, 2, `bright_tv_viewership`.`Duration2`)) BETWEEN 12 AND 16 THEN 'Afternoon 12-4pm'
-    WHEN HOUR(DATEADD(HOUR, 2, `bright_tv_viewership`.`Duration2`)) BETWEEN 17 AND 20 THEN 'Evening 5-8pm'
+    WHEN HOUR(from_utc_timestamp(`bright_tv_viewership`.`RecordDate2`, 'Africa/Johannesburg')) BETWEEN 5 AND 11 THEN 'Morning 5-11am'
+    WHEN HOUR(from_utc_timestamp(`bright_tv_viewership`.`RecordDate2`, 'Africa/Johannesburg')) BETWEEN 12 AND 16 THEN 'Afternoon 12-4pm'
+    WHEN HOUR(from_utc_timestamp(`bright_tv_viewership`.`RecordDate2`, 'Africa/Johannesburg')) BETWEEN 17 AND 20 THEN 'Evening 5-8pm'
     ELSE 'Night'
   END,
   CASE
